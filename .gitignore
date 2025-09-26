@@ -1,0 +1,165 @@
+# macOS System Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+.TemporaryItems
+.fseventsd
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Python Virtual Environment
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+
+# Python Cache and Bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Python Build and Distribution
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Python Package Files
+*.whl
+*.tar.gz
+
+# Generated MIDI Files
+*.mid
+*.midi
+sample-generations*/
+generated_*/
+output/
+renders/
+exports/
+
+# Pickle Files (Machine Learning Models)
+*.pkl
+*.pickle
+models/
+trained_models/
+model_cache/
+
+# Analysis Output Files
+*_analysis_output/
+analysis_results/
+markov_models/
+chain_data/
+
+# JSON Analysis Results (keep template configs, ignore generated data)
+*_analysis.json
+*_statistics.json
+*_transitions.json
+*_batch_analysis.json
+chord_analysis.json
+note_transitions.json
+# Uncomment if you want to exclude all analysis JSON files
+# *.json
+
+# Log Files
+*.log
+logs/
+debug.log
+error.log
+generation.log
+
+# Temporary Files
+tmp/
+temp/
+.tmp/
+.temp/
+*_temp.py
+*_backup.py
+*.bak
+*.backup
+
+# IDE and Editor Files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.sublime-project
+.sublime-workspace
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# Environment Variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# Documentation
+.mkdocs
+site/
+_build/
+_static/
+_templates/
+
+# Database Files
+*.db
+*.sqlite
+*.sqlite3
+
+# Configuration Files (uncomment if you want to exclude personal configs)
+# config.json
+# settings.json
+# user_config.py
+
+# Audio Working Files
+*.wav
+*.aif
+*.aiff
+*.flac
+*.mp3
+*.ogg
+*.m4a
+
+# Backup Files
+*~
+*.orig
+*.rej
+
+# Tree Output Files
+tree.txt
+directory_structure.txt

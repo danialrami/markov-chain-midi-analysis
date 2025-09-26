@@ -1,0 +1,19 @@
+# Core dependencies for MIDI analysis
+# Pin setuptools to avoid pkg_resources deprecation warnings
+# pretty_midi still uses pkg_resources which is deprecated in setuptools 81+
+setuptools>=65.0.0,<81.0.0
+pretty_midi>=0.2.9
+numpy>=1.24.0
+pandas>=1.5.0
+
+# Progress bars and user interface
+tqdm>=4.62.0
+
+# Optional: For more advanced analysis
+scipy>=1.9.0
+matplotlib>=3.6.0
+seaborn>=0.12.0
+music21>=8.0.0
+
+# Alternative: If you want to suppress warnings instead
+# warnings-suppression (uncomment if preferred)
