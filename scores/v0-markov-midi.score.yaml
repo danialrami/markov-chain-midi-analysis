@@ -17,7 +17,7 @@ tuning:
 
 generator:
   repo: danialrami/markov-chain-midi-analysis
-  ref: saariaho/v0-score-schema   # pin to the merge commit once this PR lands; provenance.score_commit_sha records the actual
+  ref: 4ce7c83f8e1355bd5b8d77dd1b6d19d21852581e   # pinned merge commit (squash of PR #1); immutable, not a moving branch
   algorithm: polyphonic-markov-chain
   # The generator seeds neither random nor numpy.random and has no --seed flag, so determinism
   # is pinned at the process boundary by scores/seeded_run.py (the generator is run UNMODIFIED).
