@@ -1,0 +1,88 @@
+schema_version: 0
+
+score:
+  id: v0-markov-midi-amin
+  title: "v0 — Markov MIDI, A minor"
+  description: >
+    First score. Drives the polyphonic-Markov MIDI generator on its lowest-risk,
+    fully-deterministic path to validate the v0 score contract end to end before
+    SuperCollider/continuo or microtonal targets are introduced.
+  author: saariaho
+  created: 2026-06-25
+
+tuning:
+  system: 12-TET          # only value at v0; field is first-class so n-EDO/JI are a value change, not a schema rev
+  reference_hz: 440
+  scl: null
+
+generator:
+  repo: danialrami/markov-chain-midi-analysis
+  ref: saariaho/v0-score-schema   # pin to the merge commit once this PR lands; provenance.score_commit_sha records the actual
+  algorithm: polyphonic-markov-chain
+  # The generator seeds neither random nor numpy.random and has no --seed flag, so determinism
+  # is pinned at the process boundary by scores/seeded_run.py (the generator is run UNMODIFIED).
+  entrypoint: >
+    python scores/seeded_run.py --seed 20260625 --
+    --models_dir markov_analysis_output
+    --output out/v0-markov-midi-amin.mid
+    --duration 1.0
+    --bpm 120
+    --key "A minor"
+    --max_polyphony 6
+  params:
+    models_dir: markov_analysis_output
+    output: out/v0-markov-midi-amin.mid
+    duration: 1.0
+    bpm: 120
+    key: "A minor"
+    max_polyphony: 6
+  seed: 20260625
+
+target:
+  kind: midi
+  writer: pretty_midi
+  requires:
+    python: ">=3.8"
+    pretty_midi: "*"
+    numpy: "*"
+
+expected:
+  - id: parses
+    kind: validity
+    assert: "output parses as a well-formed Standard MIDI File via pretty_midi.PrettyMIDI()"
+    rationale: "unparseable output means the writer is broken, not that the music is bad"
+  - id: in-key
+    kind: scale_membership
+    assert: "every note pitch-class ∈ {0,2,4,5,7,9,11}  (A natural minor)"
+    rationale: "--key 'A minor' routes through KeyDetector.quantize_to_key; an out-of-key pitch means the quantizer is broken"
+  - id: piano-range
+    kind: range
+    assert: "every note pitch ∈ [21, 108] inclusive"
+    rationale: "intervals_to_notes clamps to the 88-key range; a pitch outside it means the clamp is broken"
+  - id: tempo-honored
+    kind: tempo
+    assert: "the file's initial tempo == 120 BPM"
+    rationale: "tempo is set directly from --bpm; a mismatch means the writer dropped the parameter"
+  - id: reproducible
+    kind: determinism
+    assert: "two runs with seed=20260625 against the same models yield an identical note-event sequence (pitch, start, end, velocity)"
+    rationale: "non-determinism under a fixed seed is a renderer defect; this is the property the --seed patch exists to guarantee"
+
+# Recorded, never asserted. The performer fills actuals into a render-manifest sidecar on Drive.
+provenance:
+  seed: 20260625
+  model_digest:
+    chord_transitions.pkl: null   # sha256, stamped at render time — same seed + different models => different music
+    note_transitions.pkl: null
+  tool_versions: null             # resolved python + pretty_midi + numpy at render time
+  notes: >
+    Precondition: markov_analysis_output/{chord,note}_transitions.pkl must exist (built by ./run-markov.sh
+    from the MIDI corpus). If absent, this is a render error, not a failed assertion.
+
+render_manifest_spec:
+  - seed
+  - model_digest
+  - tool_versions
+  - score_commit_sha       # commit of this score file that produced the artifact
+  - artifact_backpointer   # Drive path/id of the render, linking audio back to this score
+  - output_digest          # sha256 of the emitted .mid
