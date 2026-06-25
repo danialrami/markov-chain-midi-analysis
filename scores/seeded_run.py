@@ -64,6 +64,16 @@ def main():
         print(f"RENDER ERROR: generator not found at {gen}", file=sys.stderr)
         sys.exit(3)
 
+    # Ensure the generator's output directory exists. generate_midi.py calls midi.write() on a
+    # path whose parent it never creates, so a missing dir would surface mid-render as a confusing
+    # FileNotFoundError rather than a clean failure. Creating it here keeps "fail loudly only on
+    # real errors" honest, and stays non-invasive. (Oliveros review, 2026-06-25.)
+    if "--output" in passthrough:
+        out_path = passthrough[passthrough.index("--output") + 1]
+        out_dir = os.path.dirname(out_path)
+        if out_dir:
+            os.makedirs(out_dir, exist_ok=True)
+
     print(f"[seeded_run] seed={a.seed} random+numpy → exec {gen}", file=sys.stderr)
     sys.argv = [gen] + passthrough
     runpy.run_path(gen, run_name="__main__")

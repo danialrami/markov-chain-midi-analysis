@@ -86,6 +86,13 @@ not a schema revision later. Free to carry today; painful to retrofit. (Oliveros
 > `entrypoint` therefore calls the wrapper, not the generator directly. A first-class upstream
 > `--seed` flag in `generate_midi.py` is the cleaner long-term fix for direct users and is
 > recommended as a follow-up — but that's the generator repo owner's call.
+>
+> **Wrapper precondition (Oliveros review, 2026-06-25):** process-boundary seeding only works
+> for generators that draw from the *global* `random` / `numpy.random` state. A generator that
+> builds its own instance (`random.Random()`, `np.random.default_rng()`) would run past the
+> wrapper **unseeded** while the score still claimed determinism. Before reusing this wrapper on
+> a new generator, confirm it uses global RNG state — and note that the `determinism` assertion
+> is the render-time net that catches a violation regardless (defense in depth).
 
 ### `target` — the artifact the score commits to
 

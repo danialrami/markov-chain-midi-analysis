@@ -32,7 +32,7 @@ generator:
   params:
     models_dir: markov_analysis_output
     output: out/v0-markov-midi-amin.mid
-    duration: 1.0
+    duration: 1.0   # note: largely inert for this generator — song length is fixed by the hardcoded arrangement, not this knob (kept for schema shape)
     bpm: 120
     key: "A minor"
     max_polyphony: 6

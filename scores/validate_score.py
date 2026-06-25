@@ -14,6 +14,7 @@ This does NOT render. It checks that a score is a well-formed, honorable contrac
 
 Exit code 0 = honorable contract; 1 = rejected. Usage: python validate_score.py SCORE.yaml
 """
+import re
 import sys
 import yaml
 
@@ -48,6 +49,7 @@ def main(path):
         s = yaml.safe_load(f)
 
     errors = []
+    warnings = []
 
     for k in REQUIRED_TOP:
         if k not in s:
@@ -68,8 +70,13 @@ def main(path):
     # the reproducibility promise is only real if a seed is actually pinned
     if s["generator"].get("seed") is None:
         errors.append("generator.seed is null — the score's reproducibility promise would be a lie")
-    if not str(s["generator"].get("ref", "")).strip():
-        errors.append("generator.ref is empty — pin a commit/tag/branch, never a moving target")
+    ref = str(s["generator"].get("ref", "")).strip()
+    if not ref:
+        errors.append("generator.ref is empty — pin a commit/tag, never a moving target")
+    elif not re.fullmatch(r"[0-9a-f]{7,40}", ref) and not (ref.startswith("v") or ref.startswith("refs/tags/")):
+        # SCHEMA requires a pinned commit/tag; a branch-shaped ref moves under us. Warn, don't fail —
+        # the score is still runnable, but a render is no longer reproducible from the ref alone.
+        warnings.append(f"generator.ref={ref!r} looks like a moving branch; SCHEMA requires a pinned commit/tag — repoint to the merge SHA.")
 
     for k in REQUIRED_TARGET:
         if k not in s["target"]:
@@ -103,6 +110,11 @@ def main(path):
 
     if errors:
         fail(errors)
+
+    for w in warnings:
+        print(f"  ⚠ {w}")
+    if warnings:
+        print()
 
     print(f"SCORE OK — {path}")
     print(f"  score.id            : {s['score']['id']}")
